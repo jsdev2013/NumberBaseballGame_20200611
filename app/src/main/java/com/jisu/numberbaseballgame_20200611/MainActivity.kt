@@ -150,6 +150,10 @@ class MainActivity : BaseActivity() {
         chatMessageList.add(answer)
         mChatAdapter.notifyDataSetChanged()
 
+//        리스트뷰에 내용물이 추가되고 나서 => 바닥으로 리스트를 끌어내리자.
+//        목록 중 맨 마지막 것으로 이동. 목록 중 맨 마지막의 포지션?
+        chatListView.smoothScrollToPosition(chatMessageList.size - 1)
+
 //        S3이면 게임 종료처리
         if(strikeCount == 3) {
             finishGame()
@@ -165,7 +169,7 @@ class MainActivity : BaseActivity() {
         mChatAdapter.notifyDataSetChanged()
 
 //        몇번 만에 맞췄는지?
-        val countChat = Chat("CPU", "${inputCount}만에 맞추었습니다.")
+        val countChat = Chat("CPU", "${inputCount} 번만에 맞추었습니다.")
 
         chatMessageList.add(countChat)
         mChatAdapter.notifyDataSetChanged()
