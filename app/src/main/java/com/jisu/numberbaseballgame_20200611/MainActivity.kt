@@ -37,6 +37,7 @@ class MainActivity : BaseActivity() {
             // 입력을 하고 나면 editText의 내용을 빈칸으로
             //  String 잘 먹히지 않아 setString 으로
             numberInputEdt.setText("")
+            checkStrikeAndBall(inputNumberStr.toInt())
         }
    }
 
@@ -92,5 +93,17 @@ class MainActivity : BaseActivity() {
         chatMessageList.add(Chat("CPU", "제가 생각하는 세자리 숫자를 맞춰주세요."))
         chatMessageList.add(Chat("CPU", "1~9의 숫자로만 구성되고, 중복된 숫자는 없습니다."))
 
+    }
+
+    fun checkStrikeAndBall(inputNum: Int){
+
+//        inputNum은 세 자리 숫자가 들어온다고 전제
+        val inputNumArr = ArrayList<Int>()
+//        100의 자리, 10의 자리, 1의 자리
+//        각 자리 채우기
+        inputNumArr.add(inputNum / 100) // 100의 자리
+        inputNumArr.add(inputNum / 10 % 10) // 10의 자리
+        inputNumArr.add(inputNum % 10) // 1의 자리
+        
     }
 }
