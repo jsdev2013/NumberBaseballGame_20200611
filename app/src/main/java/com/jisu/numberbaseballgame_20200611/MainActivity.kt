@@ -3,11 +3,18 @@ package com.jisu.numberbaseballgame_20200611
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.jisu.numberbaseballgame_20200611.adapters.ChatAdapter
+import com.jisu.numberbaseballgame_20200611.datas.Chat
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
     
 //  컴퓨터가 낸 문제 숫자 세개를 저장할 ArrayList
     val computerNumbers = ArrayList<Int>()
+    //    채팅 내역을 담아줄 ArrayList
+    val chatMessageList = ArrayList<Chat>()
+
+    lateinit var mChatAdapter: ChatAdapter
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,11 +25,27 @@ class MainActivity : BaseActivity() {
 
     override fun setupEvents() {
 
-    }
+        okBtn.setOnClickListener {
+            val inputNumberStr = numberInputEdt.text.toString()
+
+            val userChat = Chat("USER", inputNumberStr)
+
+            chatMessageList.add(userChat)
+
+            mChatAdapter.notifyDataSetChanged()
+
+            // 입력을 하고 나면 editText의 내용을 빈칸으로
+            //  String 잘 먹히지 않아 setString 으로
+            numberInputEdt.setText("")
+        }
+   }
 
     override fun setValues() {
 //      컴퓨터에게 문제를 내라고 시키자 => 문자: 3칸짜리 숫자 배열
         makeComputerNumber()
+
+        mChatAdapter = ChatAdapter(mContext, R.layout.chat_list_item, chatMessageList)
+        chatListView.adapter = mChatAdapter
     }
     
     fun makeComputerNumber(){
@@ -63,5 +86,11 @@ class MainActivity : BaseActivity() {
          for(num in computerNumbers){
              Log.d("최종선발문제", num.toString())
          }
+
+//        문제를 다 내고, 안내 메세지를 채팅으로 출력.
+        chatMessageList.add(Chat("CPU", "숫자 야구 게임에 오신것을 환영합니다."))
+        chatMessageList.add(Chat("CPU", "제가 생각하는 세자리 숫자를 맞춰주세요."))
+        chatMessageList.add(Chat("CPU", "1~9의 숫자로만 구성되고, 중복된 숫자는 없습니다."))
+
     }
 }
