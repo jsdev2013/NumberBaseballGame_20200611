@@ -59,5 +59,9 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+//        문제가 뭔지? 확인 for
+         for(num in computerNumbers){
+             Log.d("최종선발문제", num.toString())
+         }
     }
 }
