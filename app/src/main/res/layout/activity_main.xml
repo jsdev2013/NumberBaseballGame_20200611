@@ -23,7 +23,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxLength="3"
             android:hint="세 자리 숫자를 입력"
             android:inputType="number"/>
 

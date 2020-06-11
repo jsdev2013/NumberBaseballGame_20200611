@@ -3,15 +3,19 @@ package com.jisu.numberbaseballgame_20200611
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.jisu.numberbaseballgame_20200611.adapters.ChatAdapter
 import com.jisu.numberbaseballgame_20200611.datas.Chat
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
-    
+
+//  몇번 시도했는지 저장할 변수
+    var inputCount = 0
+
 //  컴퓨터가 낸 문제 숫자 세개를 저장할 ArrayList
     val computerNumbers = ArrayList<Int>()
-    //    채팅 내역을 담아줄 ArrayList
+//  채팅 내역을 담아줄 ArrayList
     val chatMessageList = ArrayList<Chat>()
 
     lateinit var mChatAdapter: ChatAdapter
@@ -28,6 +32,20 @@ class MainActivity : BaseActivity() {
         okBtn.setOnClickListener {
             val inputNumberStr = numberInputEdt.text.toString()
 
+//            3글자가 아니면 아예 입력 불가
+            if(inputNumberStr.length != 3){
+                Toast.makeText(mContext, "숫자는 반드시 세 자리여야 합니다.", Toast.LENGTH_SHORT).show()
+//                리턴 타입이 없는 함수에서의 return: 함수를 강제 종료시키는 키워드로 사용함
+//                @ 어느 함수를 종료시키는 지 명확히 명시
+                return@setOnClickListener
+            }
+            
+//            0이 포함되어 있다면 안내처리
+            if(inputNumberStr.contains("0")){
+                Toast.makeText(mContext, "0은 문제에 포함되지 않습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
             val userChat = Chat("USER", inputNumberStr)
 
             chatMessageList.add(userChat)
@@ -97,6 +115,9 @@ class MainActivity : BaseActivity() {
 
     fun checkStrikeAndBall(inputNum: Int){
 
+//        시도 횟k수를 한번 증가
+        inputCount++
+
 //        inputNum은 세 자리 숫자가 들어온다고 전제
         val inputNumArr = ArrayList<Int>()
 //        100의 자리, 10의 자리, 1의 자리
@@ -104,6 +125,56 @@ class MainActivity : BaseActivity() {
         inputNumArr.add(inputNum / 100) // 100의 자리
         inputNumArr.add(inputNum / 10 % 10) // 10의 자리
         inputNumArr.add(inputNum % 10) // 1의 자리
-        
+
+        var strikeCount = 0
+        var ballCount = 0
+
+//        사용자 숫자를 들고 => 컴퓨터 숫자를 조회 => 통째로 반복
+        for (i in inputNumArr.indices) {
+            for (j in computerNumbers.indices) {
+                // 같은 숫자인가?
+                if(inputNumArr[i] == computerNumbers[j]) {
+                    //위치도 같은가?
+                    if (i == j){
+                        strikeCount++
+                    } else {
+                        ballCount++
+                    }
+                }
+            }
+        }
+
+//        ?S?B인지 변수에 담겨있다. => 채팅메시지로 가공해서 컴퓨터가 답장
+         val answer = Chat("CPU", "${strikeCount}S ${ballCount}B 입니다.")
+
+        chatMessageList.add(answer)
+        mChatAdapter.notifyDataSetChanged()
+
+//        S3이면 게임 종료처리
+        if(strikeCount == 3) {
+            finishGame()
+        }
+    }
+
+    fun finishGame() {
+
+//        축하 메시지를  CPU가 말해줌
+        val congratulation = Chat("CPU", "축하합니다. 정답을 맞추었습니다!")
+
+        chatMessageList.add(congratulation)
+        mChatAdapter.notifyDataSetChanged()
+
+//        몇번 만에 맞췄는지?
+        val countChat = Chat("CPU", "${inputCount}만에 맞추었습니다.")
+
+        chatMessageList.add(countChat)
+        mChatAdapter.notifyDataSetChanged()
+
+//        더이상 입력하지 못하도록 처리
+        numberInputEdt.isEnabled = false
+        okBtn.isEnabled = false
+
+//        종료 알림 토스트
+        Toast.makeText(mContext, "이용해주셔서 감사합니다.", Toast.LENGTH_LONG).show()
     }
 }
