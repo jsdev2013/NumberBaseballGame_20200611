@@ -2,6 +2,7 @@ package com.jisu.numberbaseballgame_20200611
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import com.jisu.numberbaseballgame_20200611.adapters.ChatAdapter
@@ -51,6 +52,9 @@ class MainActivity : BaseActivity() {
             chatMessageList.add(userChat)
 
             mChatAdapter.notifyDataSetChanged()
+
+//            여기서도 자동 스크롤 처리
+            chatListView.smoothScrollToPosition(chatMessageList.size - 1)
 
             // 입력을 하고 나면 editText의 내용을 빈칸으로
             //  String 잘 먹히지 않아 setString 으로
@@ -147,17 +151,26 @@ class MainActivity : BaseActivity() {
 //        ?S?B인지 변수에 담겨있다. => 채팅메시지로 가공해서 컴퓨터가 답장
          val answer = Chat("CPU", "${strikeCount}S ${ballCount}B 입니다.")
 
-        chatMessageList.add(answer)
-        mChatAdapter.notifyDataSetChanged()
+//        답장은 1초 후에 올라오도록 => 1초 후에 실행
+        val myHandler = Handler()
+
+        myHandler.postDelayed({
+            chatMessageList.add(answer)
+            mChatAdapter.notifyDataSetChanged()
 
 //        리스트뷰에 내용물이 추가되고 나서 => 바닥으로 리스트를 끌어내리자.
 //        목록 중 맨 마지막 것으로 이동. 목록 중 맨 마지막의 포지션?
-        chatListView.smoothScrollToPosition(chatMessageList.size - 1)
+            chatListView.smoothScrollToPosition(chatMessageList.size - 1)
 
-//        S3이면 게임 종료처리
-        if(strikeCount == 3) {
-            finishGame()
-        }
+            //        S3이면 게임 종료처리
+            if(strikeCount == 3) {
+
+                Handler().postDelayed({
+                    finishGame()
+                },1000)
+            }
+
+        }, 1000)
     }
 
     fun finishGame() {
