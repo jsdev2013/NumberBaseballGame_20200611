@@ -31,7 +31,8 @@ class MainActivity : BaseActivity() {
             while (true) {
 
 //               TODO 1~9의 숫자를 랜덤으로 뽑자.
-
+//                0*9 <= (Math.random()*9+1).toInt() < 1*9+1
+                val randomNum = (Math.random()*9+1).toInt()
 
                 var isNumberOk = true
 //                 조건에 맞는 숫자를 뽑으면 무한반복 탈출
