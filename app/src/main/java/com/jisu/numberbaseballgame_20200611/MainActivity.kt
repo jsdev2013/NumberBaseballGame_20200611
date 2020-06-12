@@ -11,6 +11,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
+//   시도한 숫자들을 저장하는 배열
+    val tryNumberStrArr = ArrayList<String>()
+
 //  몇번 시도했는지 저장할 변수
     var inputCount = 0
 
@@ -46,7 +49,20 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(mContext, "0은 문제에 포함되지 않습니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            
+
+//            이미 시도해본 숫자라면 다시 시도하지 않도록 막자
+             for(alreadyNumberStr in tryNumberStrArr){
+
+                 if(alreadyNumberStr == inputNumberStr) {
+//                     중복을 발견하면 안내하고 강제 종료
+                     Toast.makeText(mContext, "${inputNumberStr}은 이미 시도해 본 숫자입니다.", Toast.LENGTH_SHORT).show()
+                     return@setOnClickListener
+                 }
+             }
+
+//            시도해본 숫자 목록에 등록
+            tryNumberStrArr.add(inputNumberStr)
+
             val userChat = Chat("USER", inputNumberStr)
 
             chatMessageList.add(userChat)
